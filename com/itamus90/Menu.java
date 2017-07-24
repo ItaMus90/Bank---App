@@ -4,13 +4,20 @@ import java.util.Scanner;
 
 public class Menu
 {
-    Scanner keyboard = new Scanner(System.in);
-    Bank bank = new Bank();
-    boolean isExit = false;
+    private Scanner keyboard = new Scanner(System.in);
+    private Bank bank = new Bank();
+    private boolean isExit = false;
+
+    //Instead to use in String for accountType
+    //i can create Enum AccountType
+    //using in Enum make the code more reuseabilly mintaiablliy
+    private String checking = "checking";
+    private String saving = "saving";
 
     public static void main(String[] args)
     {
-
+        Menu menu = new Menu();
+        menu.runMenu();
     }
 
     private void runMenu()
@@ -20,6 +27,7 @@ public class Menu
 
         while (!isExit)
         {
+            printMenu();
             choice = getInput();
             performAction(choice);
         }
@@ -34,16 +42,16 @@ public class Menu
                 System.exit(0);
                 break;
             case 1:
-                //CreateAccount();
+                createAccount();
                 break;
             case 2:
-                //MakeDeposit();
+                makeDeposit();
                 break;
             case 3:
-                //MakeWithdraw();
+                makeWithdraw();
                 break;
             case 4:
-                //ListBalance();
+                listBalance();
                 break;
 
             default:
@@ -74,7 +82,7 @@ public class Menu
                 isOutOfRange = true;
             }
         }
-        while (!isOutOfRange);
+        while (isOutOfRange);
 
         return choice;
     }
@@ -99,10 +107,92 @@ public class Menu
 
     private void createAccount()
     {
+        Account account = null;
+        String firstName = null;
+        String lastName = null;
+        String ssn = null;
+        String accountType = null;
+        double initialDeposit = Double.MIN_VALUE;
+        boolean valid = false;
 
+        while (!valid)
+        {
+            System.out.println("Please enter account type(checking/saving): ");
+            accountType = keyboard.nextLine();
+
+            if ((accountType.equalsIgnoreCase(checking)) || (accountType.equalsIgnoreCase(saving)))
+            {
+                valid = true;
+            }
+            else
+            {
+                System.out.println("Invalid type selected. please enter checking or saving");
+            }
+        }
+
+        System.out.print("PLease enter your first name: ");
+        firstName = keyboard.nextLine();
+        System.out.print("PLease enter tour last name: ");
+        lastName = keyboard.nextLine();
+        System.out.print("Please enter your social security number: ");
+        ssn = keyboard.nextLine();
+
+        valid = false;
+
+        while (!valid)
+        {
+            System.out.println("PLease enter an initial deposit: ");
+
+            try
+            {
+                initialDeposit = Double.parseDouble(keyboard.nextLine());
+            }
+            catch (NumberFormatException nfe)
+            {
+                System.out.println("Deposit must be a number " + nfe.getMessage());
+            }
+
+            if (accountType.equalsIgnoreCase(checking))
+            {
+                 if (initialDeposit < 100)
+                 {
+                     System.out.println("Checking accounts request a minimum of $100 dollars to open.");
+                 }
+                 else
+                 {
+                     valid = true;
+                 }
+            }
+            else if (accountType.equalsIgnoreCase(saving))
+            {
+                if (initialDeposit < 50)
+                {
+                    System.out.println("Saving accounts request a minimum of $50 dollars to open.");
+                }
+                else
+                {
+                    valid = true;
+                }
+            }
+        }
+
+        //Create Account
+        if (accountType.equalsIgnoreCase(checking))
+        {
+            account = new Checking(initialDeposit);
+        }
+        else if (accountType.equalsIgnoreCase(saving))
+        {
+            account = new Saving(initialDeposit);
+        }
     }
 
     private void makeDeposit()
+    {
+
+    }
+
+    private void makeWithdraw()
     {
 
     }
