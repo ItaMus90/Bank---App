@@ -5,4 +5,20 @@ package com.itamus90;
  */
 public class Saving extends Account
 {
+    private static String accountType = "saving";
+
+    public Saving(double initialDeposit)
+    {
+        super();
+        checkInterest();
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Account type: " + accountType + " Account\n"
+                + "Account number: " + this.getAccountNumber() + "\n"
+                + "Balance: " + this.getBalance() + "\n"
+                + "Interest: " + this. getInterest( ) + "%\n";
+    }
 }
