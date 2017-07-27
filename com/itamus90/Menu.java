@@ -1,5 +1,7 @@
 package com.itamus90;
 
+import java.util.Deque;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu
@@ -108,6 +110,7 @@ public class Menu
     private void createAccount()
     {
         Account account = null;
+        Customer customer = null;
         String firstName = null;
         String lastName = null;
         String ssn = null;
@@ -185,21 +188,134 @@ public class Menu
         {
             account = new Saving(initialDeposit);
         }
+
+        customer = new Customer(firstName, lastName, ssn, account);
+        bank.addCustomer(customer);
+
     }
 
     private void makeDeposit()
     {
+        int accountNumber = selectAccount();
+        double amount   = Double.MAX_VALUE;
 
+        if (accountNumber == -1)
+        {
+            runMenu();
+        }
+        else
+        {
+            System.out.print("How much would you like to deposit? ");
+            amount = checkingAmount();
+            bank.getCustomer(accountNumber).getAccount().deposit(amount);
+        }
+    }
+
+    private int selectAccount()
+    {
+        List<Customer> customers = bank.getCustomerList();
+        int accountNumber = -1;
+
+        if (customers.size() <= 0)
+        {
+            System.out.println("No customers at your bank!");
+        }
+        else
+        {
+            for (int i = 0 ; i < customers.size(); i ++ )
+            {
+                System.out.println((i + 1) + ") " + customers.get(i).baseInfo());
+            }
+
+            System.out.println("Select an account number ");
+            accountNumber = checkingSelectAccount();
+        }
+
+        return accountNumber;
     }
 
     private void makeWithdraw()
     {
+        int accountNumber = selectAccount();
+        double amount   = Double.MAX_VALUE;
 
+        if (accountNumber == -1)
+        {
+            runMenu();
+        }
+        else
+        {
+            System.out.print("How much would you like to withdraw? ");
+            amount = checkingAmount();
+            bank.getCustomer(accountNumber).getAccount().withdraw(amount);
+        }
     }
 
     private void listBalance()
     {
+        int accountNumber = selectAccount();
+        double amount   = Double.MAX_VALUE;
 
+        if (accountNumber == -1)
+        {
+            System.out.println("invalid account selection!");
+            runMenu();
+        }
+        else
+        {
+            System.out.println(bank.getCustomer(accountNumber).getAccount());
+        }
     }
 
+    private double checkingAmount()
+    {
+        double amount = Double.MAX_VALUE;
+        boolean isNotFix = true;
+        do
+        {
+            try
+            {
+                amount = Double.parseDouble(keyboard.nextLine());
+            }
+            catch (NumberFormatException nfe)
+            {
+                System.out.println("Invalid selection number only: " + nfe.getMessage());
+            }
+
+            if (amount <= 0)
+            {
+                System.out.println("Choice only positive number. Please Choose again.");
+                isNotFix = true;
+            }
+        }
+        while (isNotFix);
+
+        return amount;
+    }
+
+    private int checkingSelectAccount()
+    {
+        int selectAccount = Integer.MAX_VALUE;
+        boolean isNotFix = true;
+        do
+        {
+            try
+            {
+                selectAccount = Integer.parseInt(keyboard.nextLine());
+            }
+            catch (NumberFormatException nfe)
+            {
+                System.out.println("Invalid selection number only: " + nfe.getMessage());
+            }
+
+            if (selectAccount <= 0)
+            {
+                System.out.println("Choice only positive number. Please Choose again.");
+                isNotFix = true;
+            }
+        }
+        while (isNotFix);
+
+        return selectAccount;
+    }
 }
